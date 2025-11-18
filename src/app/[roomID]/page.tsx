@@ -1,10 +1,13 @@
 "use client"
-import PlayerInfo from "@/components/player-info"
-import { PlayerData, RoomInfoData } from "@/interfaces/room.interface"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+
 import { SERVER } from "@/../environment"
 import Button from "@/components/button"
+import PlayerInfo from "@/components/player-info"
+import { PlayerData, RoomInfoData } from "@/interfaces/room.interface"
+
+const TotalChapters = 8
 
 export const RoomState = () => {
   const router = useRouter()
@@ -14,6 +17,8 @@ export const RoomState = () => {
   const roomID = pathSegments.pop()
   const [playerData, setPlayerData] = useState<PlayerData[]>([])
   const [webSocketData, setWebSocketData] = useState<RoomInfoData | null>()
+  const [selectedOption, setSelectedOption] = useState("")
+  const [moveState, setMoveState] = useState("")
 
   useEffect(() => {
     const ws = new WebSocket(`ws://${SERVER}/ws/control/${roomID}`)
@@ -37,6 +42,18 @@ export const RoomState = () => {
     }
   }, [roomID])
 
+  useEffect(() => {
+    if (moveState !== "") {
+      const timer = setTimeout(() => {
+        setMoveState("")
+        setSelectedOption("")
+      }, 2000)
+      return () => clearTimeout(timer)
+    }
+  }, [moveState])
+
+  const options = Array.from({ length: TotalChapters }, (_, i) => (i + 1).toString())
+
   return (
     <div className="w-full">
       <div>
@@ -53,6 +70,46 @@ export const RoomState = () => {
         <div className="w-8 border-b-2 border-b-gray" />
         <div>False</div>
       </div>
+      <div className="flex items-center gap-2">
+        <span>Force all move to chapter</span>
+        <select
+          id="mySelect"
+          className={`mx-2 place-self-center overflow-y-auto rounded px-2 py-1 text-center text-gray ${selectedOption === "" && "text-gray/50"}`}
+          value={selectedOption}
+          onChange={(e) => setSelectedOption(e.target.value)}
+        >
+          <option value="" className="text-gray/50"></option>
+          {options.map((option, index) => (
+            <option key={index} value={option} className="text-gray">
+              {option}
+            </option>
+          ))}
+        </select>
+        <Button
+          disabled={selectedOption === ""}
+          onClick={() => {
+            fetch(`http://${SERVER}/simple/forceallmove/${roomID}/${selectedOption}`)
+              .then((data) => {
+                if (data.ok) {
+                  setMoveState("success")
+                } else {
+                  setMoveState("failed")
+                }
+              })
+              .catch(() => {
+                console.log("failed to send move command")
+                setMoveState("failed")
+              })
+          }}
+        >
+          Go
+        </Button>
+        {moveState === "success" && <span className="text-green-500">Move command sent!</span>}
+        {moveState === "failed" && (
+          <span className="text-red-500">Failed to send move command.</span>
+        )}
+      </div>
+
       {/* <p>Player Info:</p> */}
       <div className="flex flex-wrap gap-4 py-1">
         {playerData

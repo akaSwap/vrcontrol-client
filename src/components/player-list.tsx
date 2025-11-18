@@ -1,6 +1,8 @@
-import { SERVER } from "@/../environment"
-import AssignRoom from "./assign-room"
 import { FiRefreshCcw } from "react-icons/fi"
+
+import { SERVER } from "@/../environment"
+
+import AssignRoom from "./assign-room"
 
 const PlayerList = ({
   playerList,
@@ -36,9 +38,9 @@ const PlayerList = ({
         <span className="text-center"></span>
       </div>
       {playerList.length > 0 &&
-        playerList.map((player, i) => {
+        playerList.map((player) => {
           return (
-            <div key={i}>
+            <div key={player}>
               <AssignRoom player={player} options={roomList} onClick={assignPlayer} />
             </div>
           )
