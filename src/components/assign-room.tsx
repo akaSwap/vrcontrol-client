@@ -48,7 +48,7 @@ export const AssignRoom = ({
       <Button
         className="m-2"
         disabled={selectedOption === ""}
-        onClick={() => onClick(player, selectedOption, 0)}
+        onClick={() => onClick(player, selectedOption, numberInput)}
       >
         Assign
       </Button>

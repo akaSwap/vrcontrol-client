@@ -7,7 +7,7 @@ import Button from "@/components/button"
 import PlayerInfo from "@/components/player-info"
 import { PlayerData, RoomInfoData } from "@/interfaces/room.interface"
 
-const TotalChapters = 8
+const TotalChapters = 11
 
 export const RoomState = () => {
   const router = useRouter()
@@ -52,7 +52,13 @@ export const RoomState = () => {
     }
   }, [moveState])
 
-  const options = Array.from({ length: TotalChapters }, (_, i) => (i + 1).toString())
+  const handleChangeSequence = (player: string, seq: number) => {
+    fetch(`http://${SERVER}/control/assignseq/${roomID}/${player}/${seq}`, {
+      method: "POST",
+    }).then(() => console.log("assign", player, "to sequence", seq))
+  }
+
+  const options = Array.from({ length: TotalChapters }, (_, i) => i.toString())
 
   return (
     <div className="w-full">
@@ -115,8 +121,14 @@ export const RoomState = () => {
         {playerData
           .slice()
           .sort((a, b) => (a.sequence >= b.sequence ? 1 : -1))
-          .map((player, i) => {
-            return <PlayerInfo key={i} player={player} />
+          .map((player) => {
+            return (
+              <PlayerInfo
+                key={player.device_id + player.sequence}
+                player={player}
+                handleChangeSequence={handleChangeSequence}
+              />
+            )
           })}
       </div>
     </div>
