@@ -17,7 +17,7 @@ const PlayerList = ({
 }) => {
   async function assignPlayer(player: string, roomId: string, seq: number) {
     console.log("assignPlayer", player, roomId, seq)
-    fetch(`http://${SERVER}/control/assignroomandseq/${player}/${roomId}/${seq}`, {
+    fetch(`${SERVER}/control/assignroomandseq/${player}/${roomId}/${seq}`, {
       method: "POST",
     }).then((r) => console.log(r.status, r.statusText))
   }

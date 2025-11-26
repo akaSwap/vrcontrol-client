@@ -14,6 +14,9 @@ export const RoomState = () => {
 
   const pathSegments = usePathname().split("/")
 
+  const wsProtocol = SERVER.startsWith("https") ? "wss" : "ws"
+  const host = SERVER.replace(/^https?:\/\//, "")
+
   const roomID = pathSegments.pop()
   const [playerData, setPlayerData] = useState<PlayerData[]>([])
   const [webSocketData, setWebSocketData] = useState<RoomInfoData | null>()
@@ -21,7 +24,7 @@ export const RoomState = () => {
   const [moveState, setMoveState] = useState("")
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://${SERVER}/ws/control/${roomID}`)
+    const ws = new WebSocket(`${wsProtocol}://${host}/ws/control/${roomID}`)
     ws.onopen = () => {
       console.log("open connection")
     }
@@ -53,7 +56,7 @@ export const RoomState = () => {
   }, [moveState])
 
   const handleChangeSequence = (player: string, seq: number) => {
-    fetch(`http://${SERVER}/control/assignseq/${roomID}/${player}/${seq}`, {
+    fetch(`${SERVER}/control/assignseq/${roomID}/${player}/${seq}`, {
       method: "POST",
     }).then(() => console.log("assign", player, "to sequence", seq))
   }
@@ -94,7 +97,7 @@ export const RoomState = () => {
         <Button
           disabled={selectedOption === ""}
           onClick={() => {
-            fetch(`http://${SERVER}/simple/forceallmove/${roomID}/${selectedOption}`)
+            fetch(`${SERVER}/simple/forceallmove/${roomID}/${selectedOption}`)
               .then((data) => {
                 if (data.ok) {
                   setMoveState("success")

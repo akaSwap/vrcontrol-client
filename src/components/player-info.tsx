@@ -45,6 +45,12 @@ const PlayerInfo = ({
           </tr>
           <tr>
             <td>
+              <strong>Message</strong>
+            </td>
+            <td>{player.message}</td>
+          </tr>
+          <tr>
+            <td>
               <strong>Sequence</strong>
             </td>
             <td>

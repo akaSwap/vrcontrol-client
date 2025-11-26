@@ -6,6 +6,7 @@ export interface Vector3 {
 
 export interface PlayerData {
   device_id: string
+  message: string
   chapter: number
   sequence: number
   ready_to_move: boolean

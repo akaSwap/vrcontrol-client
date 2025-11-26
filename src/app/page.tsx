@@ -13,7 +13,7 @@ export default function Home() {
 
   const getPlayer = async () => {
     console.log("fetching player list")
-    fetch(`http://${SERVER}/control/playerlist`).then((r) =>
+    fetch(`${SERVER}/control/playerlist`).then((r) =>
       r.json().then((j) => {
         setPlayerList(
           j.unassignedPlayers
@@ -26,7 +26,7 @@ export default function Home() {
 
   const getRoom = async () => {
     console.log("fetching room list")
-    fetch(`http://${SERVER}/control/roomlist`).then((r) =>
+    fetch(`${SERVER}/control/roomlist`).then((r) =>
       r.json().then((j) => {
         setRoomList(j.rooms.slice().sort((a: string, b: string) => a.localeCompare(b)))
       }),
